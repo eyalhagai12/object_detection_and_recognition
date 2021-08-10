@@ -3,7 +3,27 @@ import cv2
 import mediapipe as mp
 
 
-class HandTracker():
+def get_dist_from_fingers(fingers_1, fingers_2):
+    """
+    Get the distance between two fingers and return a list that contains tuples that represent
+    (finger_1 position, finger_2 position, distance)
+    finger_pos = (x, y)
+
+    :param fingers_1: the first finger
+    :param fingers_2: the second finger
+    :return: a list with tuples in the shape (finger_1 position, finger_2 position, distance)
+    """
+    result = []
+    for finger1, finger2 in zip(fingers_1, fingers_2):
+        finger2_pos = (int(finger2.x), int(finger2.y))
+        finger1_pos = (int(finger1.x), int(finger1.y))
+        dist = math.dist(finger1_pos, finger2_pos)
+        result.append((finger1_pos, finger2_pos, dist))
+
+    return result
+
+
+class HandTracker:
     def __init__(self, image_mode=False, max_hands=2, min_detection_confidence=0.5, min_tracking_confidence=0.5):
         self.mpHands = mp.solutions.hands
         self.hands = self.mpHands.Hands(image_mode, max_hands, min_detection_confidence, min_tracking_confidence)
@@ -14,7 +34,7 @@ class HandTracker():
         self.w = 0
         self.c = 3
 
-    def detect_hands(self, img, draw=True):
+    def process(self, img, draw=True):
         """
         Detect hands in an image and draw points and connections
 
@@ -37,15 +57,21 @@ class HandTracker():
                 for hand in hands:
                     self.mpDraw.draw_landmarks(self.img, hand)
 
-    def get_finger(self, hand_location_index=0, draw=True):
+    def get_finger(self, index=0, draw=True):
         """
         Get a finger and draw a point to show which part is it
 
-        :param hand_location_index: the index of the part of the hand
+        :param index: the index of the part of the hand
+        :param draw: set to false if you don't want to draw the landmarks
         :return: list with the co-ordinates of the part for each hand in the picture
         """
+        if index < 0 or index > 21:
+            raise IndexError("Variable 'index' must be between 0 and 20")
 
-        # get all the hands in the picture
+        if self.img is None:
+            raise Exception("Must use 'process' function before using 'get_finger'")
+
+            # get all the hands in the picture
         hands = self.detect.multi_hand_landmarks
 
         # create an empty list of fingers
@@ -55,7 +81,7 @@ class HandTracker():
         if hands:
             # if found hands go over each hand and check the
             for hand in hands:
-                finger = hand.landmark[hand_location_index]
+                finger = hand.landmark[index]
                 fingers.append(finger)
 
                 # turn the parameters from percentages to pixels
@@ -70,24 +96,6 @@ class HandTracker():
 
         return fingers
 
-    def get_dist_from_fingers(self, fingers_1, fingers_2):
-        """
-        Get the distance between two fingers and return a list that contains tuples that represent
-        (finger_1 position, finger_2 position, distance)
-
-        :param fingers_1: the first finger
-        :param fingers_2: the second finger
-        :return: a list with tuples in the shape (finger_1 position, finger_2 position, distance)
-        """
-        result = []
-        for finger1, finger2 in zip(fingers_1, fingers_2):
-            finger2_pos = (int(finger2.x), int(finger2.y))
-            finger1_pos = (int(finger1.x), int(finger1.y))
-            dist = math.dist(finger1_pos, finger2_pos)
-            result.append((finger1_pos, finger2_pos, dist))
-
-        return result
-
 
 def main():
     # capture from the webcam
@@ -99,7 +107,7 @@ def main():
     # show the feed
     while True:
         success, img = cap.read()
-        hand.detect_hands(img, False)
+        hand.process(img, False)
         index_fingers = hand.get_finger(8)
         thumbs = hand.get_finger(4)
 
@@ -122,6 +130,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-

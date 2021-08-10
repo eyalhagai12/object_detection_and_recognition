@@ -34,11 +34,11 @@ while True:
     # if there is a hand in the image get the information
     if len(f1) > 0:
         # get positions and distances from the wanted points
-        f1_pos, f1_bottom_pos, dist1 = ht.get_dist_from_fingers(f1, f1_bottom)[0]
-        f2_pos, f2_bottom_pos, dist2 = ht.get_dist_from_fingers(f2, f2_bottom)[0]
-        f3_pos, f3_bottom_pos, dist3 = ht.get_dist_from_fingers(f3, f3_bottom)[0]
-        f4_pos, f4_bottom_pos, dist4 = ht.get_dist_from_fingers(f4, f4_bottom)[0]
-        f5_pos, f5_bottom_pos, dist5 = ht.get_dist_from_fingers(f5, f3_bottom)[0]
+        f1_pos, f1_bottom_pos, dist1 = get_dist_from_fingers(f1, f1_bottom)[0]
+        f2_pos, f2_bottom_pos, dist2 = get_dist_from_fingers(f2, f2_bottom)[0]
+        f3_pos, f3_bottom_pos, dist3 = get_dist_from_fingers(f3, f3_bottom)[0]
+        f4_pos, f4_bottom_pos, dist4 = get_dist_from_fingers(f4, f4_bottom)[0]
+        f5_pos, f5_bottom_pos, dist5 = get_dist_from_fingers(f5, f3_bottom)[0]
 
         # make a list of the distances
         distances = [dist1, dist2, dist3, dist4, dist5]

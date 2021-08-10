@@ -19,7 +19,7 @@ while True:
     point = hand_detector.get_finger(9, False)
     point2 = hand_detector.get_finger(12, False)
 
-    distances = hand_detector.get_dist_from_fingers(point, point2)
+    distances = get_dist_from_fingers(point, point2)
 
     # draw circle around the hand
     if len(point) > 0:
