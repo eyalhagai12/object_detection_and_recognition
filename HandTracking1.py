@@ -1,5 +1,5 @@
 import cv2
-from HandTrackingModule import HandTracker
+from HandTrackingModule import HandTracker, get_dist_from_fingers
 
 # get feed from the camera
 cap = cv2.VideoCapture(0)
@@ -13,7 +13,7 @@ while True:
     success, img = cap.read()
 
     # detect ands in img
-    hand_detector.detect_hands(img)
+    hand_detector.process(img)
 
     # get some points
     point = hand_detector.get_finger(9, False)

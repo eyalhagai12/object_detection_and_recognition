@@ -10,6 +10,8 @@ mp_pose = mp_pose_sel.Pose()
 
 # add drawing utils
 mp_draw = mp.solutions.drawing_utils
+mp_style = mp.solutions.drawing_styles.DrawingSpec((0, 0, 0))
+mp_style2 = mp.solutions.drawing_styles.DrawingSpec((200, 200, 200))
 
 # process video
 while True:
@@ -23,10 +25,8 @@ while True:
     process = mp_pose.process(imgRGB)
 
     # draw the landmarks
-    mp_draw.draw_landmarks(img, process.pose_landmarks, mp_pose_sel.POSE_CONNECTIONS)
+    if process.pose_landmarks:
+        mp_draw.draw_landmarks(img, process.pose_landmarks, mp_pose_sel.POSE_CONNECTIONS)
 
     cv2.imshow("Image", img)
     cv2.waitKey(1)
-
-
-

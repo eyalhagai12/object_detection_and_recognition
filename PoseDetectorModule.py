@@ -53,7 +53,7 @@ class PoseDetector:
         if self.img is None:
             raise Exception("Must use 'process' function before using 'get_point'")
 
-        if self.processedImage.pose_landmarks is not None:
+        if self.processedImage.pose_landmarks:
             # get landmarks
             landmarks = self.processedImage.pose_landmarks.landmark
 
@@ -63,6 +63,7 @@ class PoseDetector:
             # turn them to pixels instead of percentages
             point_location.x = point_location.x * self.img_width
             point_location.y = point_location.y * self.img_height
+            pos = (point_location.x, point_location.y)
 
             if draw:
                 # get the center for drawing
@@ -72,7 +73,7 @@ class PoseDetector:
                 # draw the circle on the image
                 cv2.circle(self.img, center, 5, color, cv2.FILLED)
 
-            return point_location
+            return pos
 
 
 def main():
