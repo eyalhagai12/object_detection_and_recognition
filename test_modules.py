@@ -3,13 +3,13 @@ from ObjectronModule import Objectron
 
 cap = cv2.VideoCapture(0)
 
-objectron = Objectron(model_name="Chair")
+pose_detector = Objectron(model_name="Chair")
 
 while True:
     success, img = cap.read()
 
-    objectron.process(img)
+    pose_detector.process(img)
 
-    cv2.imshow("Frame", img)
+    cv2.imshow("Image", img)
     cv2.waitKey(1)
 
