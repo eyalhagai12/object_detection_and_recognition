@@ -1,8 +1,7 @@
 from TrackerAlgo import TrackerAlgo
 import cv2
-
 from myModel import myModel
-
+print(cv2.version.opencv_version)
 
 def get_model(algo: TrackerAlgo):
     # Set up tracker
@@ -13,7 +12,7 @@ def get_model(algo: TrackerAlgo):
     if algo == TrackerAlgo.TLD:
         track_algo = cv2.legacy_TrackerTLD().create()
     if algo == TrackerAlgo.MOSSE:
-        track_algo = cv2.legacy_TrackerMOSSE().create()
+        track_algo = cv2.TrackerMOSSE_create()
     if algo == TrackerAlgo.CSRT:
         track_algo = cv2.TrackerCSRT_create()
     if algo == TrackerAlgo.MIL:

@@ -1,4 +1,5 @@
 import cv2
+import torch
 
 
 def get_crop(frame, p1, p2):
@@ -11,8 +12,8 @@ def get_crop(frame, p1, p2):
     :return: the cropped image of the hand, resized and in grayscale
     """
     c_image = frame[p1[1]:p2[1], p1[0]:p2[0]]
-    c_image = cv2.cvtColor(c_image, cv2.COLOR_BGR2GRAY)
-    c_image = cv2.resize(c_image, (256, 256))
+    c_image = cv2.cvtColor(c_image, cv2.COLOR_BGR2RGB)
+    c_image = cv2.resize(c_image, (224, 224))
 
     return c_image
 
@@ -31,12 +32,12 @@ class viewer:
         self.controller = controller
 
     def view(self):
-        video = cv2.VideoCapture(0)
+        video = cv2.VideoCapture(-1)
 
         while True:
             # Read a new frame
-            ok, frame = video.read()
-            if not ok:
+            success, frame = video.read()
+            if not success:
                 break
 
             # Start timer
@@ -49,16 +50,18 @@ class viewer:
             fps = cv2.getTickFrequency() / (cv2.getTickCount() - timer)
 
             # Draw bounding box
-            if ok:
+            if ok and success:
                 # Tracking success
                 cv2.rectangle(frame, p1, p2, (255, 0, 0), 2, 1)
 
                 # view hand crop
                 c_image = get_crop(frame, p1, p2)
                 out = self.controller.process_sign(c_image)
-                cv2.putText(frame, "Label : " + self.labels[out], (100, 100), cv2.FONT_HERSHEY_SIMPLEX, 0.75,
+                idx = torch.argmax(out[0]).item()
+                print(idx)
+                cv2.putText(frame, "Label : " + self.labels[idx], (100, 100), cv2.FONT_HERSHEY_SIMPLEX, 0.75,
                             (50, 170, 50), 2)
-                print("Predicted Label: {}".format(self.labels[out]))
+                print("Predicted Label: {}".format(self.labels[idx]))
                 cv2.imshow("Crop", c_image)
             else:
                 # Tracking failure

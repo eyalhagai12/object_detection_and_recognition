@@ -34,7 +34,7 @@ class controller:
         """
         Try to detect a hand for the first time then initiate the tracker and start the program properly
         """
-        video = cv2.VideoCapture(0)
+        video = cv2.VideoCapture(-1)
         bbox = None
 
         while bbox is None:
@@ -42,7 +42,9 @@ class controller:
             bbox = self.detector.process(frame)
             print("Trying to detect hands...")
 
+        print("detected hand!")
         self.tracker.set_init_bbox(frame, bbox)
+        video.release()
         self.viewer.view()
 
 
